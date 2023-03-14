@@ -1,3 +1,4 @@
+/* --------------------------Section de Code Utilisateur---------------------*/
 package fr.usmb.compilation.jflex.calc.standalone;
 
 import java.util.LinkedList;
@@ -5,12 +6,15 @@ import java.io.*;
 
 %%
 
+/* -----------------Section des Declarations et Options----------------------*/
+// nom de la class a generer
 %class Calc
 
-%public
-%integer
+%public  // la classe est publique
+%integer // analyseur renvoie des entiers
 %unicode
 
+// code a ajouter dans la classe produite
 %{
     private LinkedList<Integer> pile = new LinkedList<>();
     
@@ -39,12 +43,14 @@ import java.io.*;
     }
 %}
 
-espace     = \s+
+/* definitions regulieres */
+espaces    = \s+
 uint       = ([1-9][0-9]*)|0
 entier     = (\+|-)?{uint}
 
 %%
 
+/* ------------------------Section des Regles Lexicales----------------------*/
 "="         { System.out.println("--> " + pile.peek()); }
 "+"         { int op2 = pile.pop(); int op1 = pile.pop(); pile.push(op1 + op2); }
 "-"         { int op2 = pile.pop(); int op1 = pile.pop(); pile.push(op1 - op2); }
@@ -52,5 +58,5 @@ entier     = (\+|-)?{uint}
 "*"         { int op2 = pile.pop(); int op1 = pile.pop(); pile.push(op1 * op2); }
 "n"         { int op1 = pile.pop(); pile.push(- op1);  /* moins unaire */       }
 {entier}    { pile.push(Integer.parseInt(yytext())); }
-{espace}    { /* espace : pas d'action */            }
+{espaces}   { /* espace : pas d'action */            }
 .           { System.out.println("caractere imprevu : " + yytext()); }
